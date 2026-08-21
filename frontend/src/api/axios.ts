@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8080";
+// Saat development: Vite proxy meneruskan /api → http://localhost:8080
+// Saat production: ganti dengan URL backend yang sebenarnya, misal: https://api.sekolah.sch.id
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
