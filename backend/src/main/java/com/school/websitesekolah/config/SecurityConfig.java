@@ -90,6 +90,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Login admin selalu publik
                         .requestMatchers("/api/auth/**").permitAll()
+                        // Akses gambar/file yang diupload oleh siapa saja
+                        .requestMatchers("/uploads/**").permitAll()
                         // Data sekolah bisa dibaca (GET) oleh siapa saja, termasuk fitur search
                         .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
                         // Selain itu (POST/PUT/PATCH/DELETE ke semua resource) wajib login sebagai admin

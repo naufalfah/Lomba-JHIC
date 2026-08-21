@@ -1,5 +1,5 @@
 import { useState, useEffect, FormEvent } from "react";
-import { getNews, createNews, updateNews, deleteNews, type News } from "../../api/newsApi";
+import { getNews, createNews, updateNews, deleteNews, uploadImage, type News } from "../../api/newsApi";
 
 function Berita() {
   const [newsList, setNewsList] = useState<News[]>([]);
@@ -9,6 +9,7 @@ function Berita() {
   const [editingNews, setEditingNews] = useState<News | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   // Form state
   const [form, setForm] = useState<News>({
@@ -54,6 +55,19 @@ function Berita() {
   const closeModal = () => {
     setShowModal(false);
     setEditingNews(null);
+  };
+
+  const handleImageUpload = async (file: File) => {
+    if (!file) return;
+    setUploadingImage(true);
+    try {
+      const url = await uploadImage(file);
+      setForm((prev) => ({ ...prev, imagePath: url }));
+    } catch (err: any) {
+      alert("Gagal mengunggah gambar: " + (err.response?.data?.message || err.message));
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -256,7 +270,7 @@ function Berita() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="news-date" className="block text-sm font-medium text-gray-700 mb-1.5">
                     Tanggal <span className="text-red-500">*</span>
@@ -272,17 +286,60 @@ function Berita() {
                 </div>
 
                 <div>
-                  <label htmlFor="news-image" className="block text-sm font-medium text-gray-700 mb-1.5">
-                    URL Gambar
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    Gambar Berita
                   </label>
-                  <input
-                    id="news-image"
-                    type="text"
-                    value={form.imagePath ?? ""}
-                    onChange={(e) => setForm({ ...form, imagePath: e.target.value })}
-                    placeholder="https://..."
-                    className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                  />
+                  
+                  {form.imagePath ? (
+                    <div className="relative rounded-xl border border-gray-200 p-2 flex items-center gap-3 bg-gray-50">
+                      <img 
+                        src={form.imagePath} 
+                        alt="Preview" 
+                        className="h-12 w-12 rounded-lg object-cover bg-white border"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[10px] font-medium text-gray-500 truncate">Gambar Terpilih</p>
+                        <p className="text-[10px] text-gray-400 truncate">{form.imagePath}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setForm({ ...form, imagePath: "" })}
+                        className="p-1 px-2 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition text-[10px] font-semibold"
+                      >
+                        Hapus
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="border border-dashed border-gray-200 rounded-xl p-3 text-center hover:border-blue-400 transition relative bg-gray-50/50 cursor-pointer">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleImageUpload(file);
+                          }}
+                          disabled={uploadingImage}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                        <div className="space-y-0.5">
+                          <div className="text-sm">📸</div>
+                          <div className="text-[10px] font-medium text-gray-600">
+                            {uploadingImage ? "Mengunggah..." : "Pilih file gambar untuk diunggah"}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <input
+                        id="news-image-url"
+                        type="text"
+                        value={form.imagePath ?? ""}
+                        onChange={(e) => setForm({ ...form, imagePath: e.target.value })}
+                        placeholder="Atau masukkan URL gambar langsung..."
+                        className="w-full rounded-xl border border-gray-200 px-3 py-1.5 text-[11px] text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
 

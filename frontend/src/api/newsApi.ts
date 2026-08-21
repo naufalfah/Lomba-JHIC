@@ -31,3 +31,14 @@ export const updateNews = async (id: number, news: News): Promise<News> => {
 export const deleteNews = async (id: number): Promise<void> => {
   await axiosInstance.delete(`/api/news/${id}`);
 };
+
+export const uploadImage = async (file: File): Promise<string> => {
+  const formData = new FormData();
+  formData.append("file", file);
+  const response = await axiosInstance.post<{ url: string }>("/api/upload", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data.url;
+};

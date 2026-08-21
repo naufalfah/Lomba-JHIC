@@ -39,13 +39,12 @@ function Navbar() {
       className={`
         fixed top-0 left-0 right-0 z-[1000]
         flex items-center justify-between
-        lg:h-[100px] h-20
         lg:px-[90px] md:px-10 px-6
-        transition-all duration-300
+        transition-all duration-500 ease-in-out
         ${
           isScrolled
-            ? "bg-white text-black shadow-md rounded-b-2xl px-6"
-            : "bg-transparent text-white"
+            ? "bg-white/80 backdrop-blur-md text-black shadow-md rounded-b-2xl lg:h-[100px] h-20"
+            : "bg-transparent text-white lg:h-[100px] h-20"
         }
       `}
     >
@@ -67,7 +66,7 @@ function Navbar() {
 
       {/* DESKTOP MENU */}
       <div className="lg:flex gap-8 hidden translate-y-1 items-center">
-        <a href="" className="hover:opacity-70 transition">
+        <a href="" className="hover:opacity-70">
           BERANDA
         </a>
 
@@ -75,13 +74,15 @@ function Navbar() {
         <div className="relative">
           <button
             onClick={() => toggleDropdown("profil")}
-            className="flex items-center gap-2 hover:opacity-70 transition"
+            className="flex items-center gap-2 hover:opacity-70 "
           >
             PROFIL SEKOLAH
             <img
-              src={isScrolled ? DownBlack : Down}
+              src={Down}
               alt=""
-              className={`w-[12px] transition-transform duration-300 ${
+              className={`w-[12px] transition-all duration-300 ${
+                isScrolled ? "brightness-0" : ""
+              } ${
                 activeDropdown === "profil" ? "rotate-180" : ""
               }`}
             />
@@ -100,13 +101,15 @@ function Navbar() {
         <div className="relative">
           <button
             onClick={() => toggleDropdown("kompetensi")}
-            className="flex items-center gap-2 hover:opacity-70 transition"
+            className="flex items-center gap-2 hover:opacity-70"
           >
             KOMPETENSI KEAHLIAN
             <img
-              src={isScrolled ? DownBlack : Down}
+              src={Down}
               alt=""
-              className={`w-[12px] transition-transform duration-300 ${
+              className={`w-[12px] transition-all duration-300 ${
+                isScrolled ? "brightness-0" : ""
+              } ${
                 activeDropdown === "kompetensi" ? "rotate-180" : ""
               }`}
             />
@@ -125,13 +128,15 @@ function Navbar() {
         <div className="relative">
           <button
             onClick={() => toggleDropdown("prestasi")}
-            className="flex items-center gap-2 hover:opacity-70 transition"
+            className="flex items-center gap-2 hover:opacity-70"
           >
             PRESTASI
             <img
-              src={isScrolled ? DownBlack : Down}
+              src={Down}
               alt=""
-              className={`w-[12px] transition-transform duration-300 ${
+              className={`w-[12px] transition-all duration-300 ${
+                isScrolled ? "brightness-0" : ""
+              } ${
                 activeDropdown === "prestasi" ? "rotate-180" : ""
               }`}
             />
@@ -150,13 +155,15 @@ function Navbar() {
         <div className="relative">
           <button
             onClick={() => toggleDropdown("fasilitas")}
-            className="flex items-center gap-2 hover:opacity-70 transition"
+            className="flex items-center gap-2 hover:opacity-70"
           >
             FASILITAS
             <img
-              src={isScrolled ? DownBlack : Down}
+              src={Down}
               alt=""
-              className={`w-[12px] transition-transform duration-300 ${
+              className={`w-[12px] transition-all duration-300 ${
+                isScrolled ? "brightness-0" : ""
+              } ${
                 activeDropdown === "fasilitas" ? "rotate-180" : ""
               }`}
             />
@@ -176,13 +183,15 @@ function Navbar() {
         <div className="relative">
           <button
             onClick={() => toggleDropdown("informasi")}
-            className="flex items-center gap-2 hover:opacity-70 transition"
+            className="flex items-center gap-2 hover:opacity-70"
           >
             INFORMASI
             <img
-              src={isScrolled ? DownBlack : Down}
+              src={Down}
               alt=""
-              className={`w-[12px] transition-transform duration-300 ${
+              className={`w-[12px] transition-all duration-300 ${
+                isScrolled ? "brightness-0" : ""
+              } ${
                 activeDropdown === "informasi" ? "rotate-180" : ""
               }`}
             />
