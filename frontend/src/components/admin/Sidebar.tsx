@@ -1,7 +1,9 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { logout, getAdminEmail } from "../../api/authApi";
 
 function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const menu = [
     {
@@ -36,8 +38,15 @@ function Sidebar() {
     },
   ];
 
+  const handleLogout = () => {
+    logout();
+    navigate("/admin/login");
+  };
+
+  const adminEmail = getAdminEmail();
+
   return (
-    <aside className="fixed left-0 top-0 z-50 h-screen w-64 bg-white border-r border-gray-200">
+    <aside className="fixed left-0 top-0 z-50 h-screen w-64 bg-white border-r border-gray-200 flex flex-col">
 
       {/* Logo */}
       <div className="flex h-20 items-center gap-3 px-6 border-b border-gray-200">
@@ -58,7 +67,7 @@ function Sidebar() {
 
 
       {/* Menu */}
-      <nav className="p-4">
+      <nav className="p-4 flex-1 overflow-y-auto">
 
         <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
           Menu Utama
@@ -96,10 +105,21 @@ function Sidebar() {
       </nav>
 
 
-      {/* Logout */}
-      <div className="absolute bottom-4 left-4 right-4">
+      {/* Admin info + Logout */}
+      <div className="border-t border-gray-100 p-4">
 
-        <button className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-500 hover:bg-red-50">
+        {adminEmail && (
+          <div className="mb-3 rounded-xl bg-gray-50 px-4 py-3">
+            <p className="text-xs text-gray-400">Login sebagai</p>
+            <p className="text-sm font-medium text-gray-700 truncate">{adminEmail}</p>
+          </div>
+        )}
+
+        <button
+          id="btn-logout"
+          onClick={handleLogout}
+          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-500 hover:bg-red-50 transition"
+        >
           🚪
           Logout
         </button>
