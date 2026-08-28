@@ -1,5 +1,6 @@
 package com.school.websitesekolah.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,6 +37,7 @@ public class Facility {
     @Column(nullable = false)
     private LocalDateTime year;
 
+    @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "facility", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference("facility-photo")

@@ -1,6 +1,6 @@
 package com.school.websitesekolah.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,9 +32,9 @@ public class Student {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String address;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "major_id", nullable = false)
-    @JsonBackReference("major-student")
+    @JsonIgnoreProperties({"students", "majorStatistics", "majorCollabs", "hibernateLazyInitializer", "handler"})
     private Major major;
 
     // Relasi 1-1 ke Alumni. Baris di tabel alumni hanya ada jika student tsb sudah lulus.

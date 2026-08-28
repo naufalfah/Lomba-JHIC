@@ -36,6 +36,7 @@ public class MajorService {
     public Major update(Long id, Major payload) {
         Major existing = findById(id);
         existing.setName(payload.getName());
+        existing.setDescription(payload.getDescription());
         existing.setLogoPath(payload.getLogoPath());
         return majorRepository.save(existing);
     }

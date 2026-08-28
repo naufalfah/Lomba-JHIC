@@ -33,8 +33,13 @@ public class StudentController {
         return ResponseEntity.ok(studentService.findById(id));
     }
 
+    @PostMapping
+    public ResponseEntity<Student> create(@RequestParam(required = false) Long majorId, @RequestBody Student student) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(studentService.create(majorId, student));
+    }
+
     @PostMapping("/major/{majorId}")
-    public ResponseEntity<Student> create(@PathVariable Long majorId, @RequestBody Student student) {
+    public ResponseEntity<Student> createWithMajorPath(@PathVariable Long majorId, @RequestBody Student student) {
         return ResponseEntity.status(HttpStatus.CREATED).body(studentService.create(majorId, student));
     }
 

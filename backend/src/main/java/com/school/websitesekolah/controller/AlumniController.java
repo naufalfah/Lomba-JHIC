@@ -1,5 +1,6 @@
 package com.school.websitesekolah.controller;
 
+import com.school.websitesekolah.dto.AlumniRequestDTO;
 import com.school.websitesekolah.entity.Alumni;
 import com.school.websitesekolah.service.AlumniService;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +30,19 @@ public class AlumniController {
         return ResponseEntity.ok(alumniService.findByStudentId(studentId));
     }
 
+    @PostMapping
+    public ResponseEntity<Alumni> createFromDto(@RequestBody AlumniRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(alumniService.createFromDto(dto));
+    }
+
     @PostMapping("/student/{studentId}")
     public ResponseEntity<Alumni> create(@PathVariable Long studentId, @RequestBody Alumni payload) {
         return ResponseEntity.status(HttpStatus.CREATED).body(alumniService.create(studentId, payload));
     }
 
     @PutMapping("/{studentId}")
-    public ResponseEntity<Alumni> update(@PathVariable Long studentId, @RequestBody Alumni payload) {
-        return ResponseEntity.ok(alumniService.update(studentId, payload));
+    public ResponseEntity<Alumni> updateFromDto(@PathVariable Long studentId, @RequestBody AlumniRequestDTO dto) {
+        return ResponseEntity.ok(alumniService.updateFromDto(studentId, dto));
     }
 
     @DeleteMapping("/{studentId}")

@@ -1,19 +1,53 @@
-import Guru from "../assets/guru_card.jpg"
-import Siswa from "../assets/siswa_card.jpg"
+import { useState, useEffect } from "react"
+import DefaultGuruImage from "../assets/guru_card.jpg"
+import DefaultSiswaImage from "../assets/siswa_card.jpg"
 import StatCard from "./StatCard"
+import ButtonJelajah from "./ButtonJelajah.tsx"
+import { getTotalSiswa, getTotalGuru, getImageSiswa, getImageGuru } from "../api/statCounts"
 
 function Welcome() {
+    const [studentCount, setStudentCount] = useState<string>("1279")
+    const [teacherCount, setTeacherCount] = useState<string>("88")
+    const [studentImage, setStudentImage] = useState<string>(DefaultSiswaImage)
+    const [teacherImage, setTeacherImage] = useState<string>(DefaultGuruImage)
+
+    const updateStateFromStorage = () => {
+        setStudentCount(getTotalSiswa().toString())
+        setTeacherCount(getTotalGuru().toString())
+
+        const customSiswa = getImageSiswa()
+        setStudentImage(customSiswa || DefaultSiswaImage)
+
+        const customGuru = getImageGuru()
+        setTeacherImage(customGuru || DefaultGuruImage)
+    }
+
+    useEffect(() => {
+        updateStateFromStorage()
+
+        // Sync in real-time when updated in admin panel or other tabs
+        window.addEventListener("stat_counts_updated", updateStateFromStorage)
+        window.addEventListener("storage", updateStateFromStorage)
+
+        return () => {
+            window.removeEventListener("stat_counts_updated", updateStateFromStorage)
+            window.removeEventListener("storage", updateStateFromStorage)
+        }
+    }, [])
+
     return (
         <section className="bg-[#FFA20D]">
             <div className="
-                    w-[90vw]
+                    w-[92vw]
+                    sm:w-[90vw]
                     lg:w-[80vw]
                     mx-auto
-                    px-6
-                    py-12
+                    px-4
+                    sm:px-6
+                    py-10
+                    md:py-12
                     lg:px-1
                     lg:py-20
-                    
                 ">
 
                 <div className="
@@ -26,36 +60,21 @@ function Welcome() {
                     ">
 
                     <div className="text-white">
-                        <p className="text-xl lg:text-2xl font-normal">
+                        <p className="text-lg sm:text-xl lg:text-2xl font-normal">
                             Selamat Datang,
                         </p>
 
-                        <p className="text-4xl md:text-5xl lg:text-5xl font-bold leading-tight">
+                        <p className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
                             SMKN 2 MOJOKERTO
                         </p>
 
-                        <p className="text-base lg:text-base font-light">
+                        <p className="text-sm sm:text-base lg:text-base font-light">
                             Disiplin Berprestasi
                         </p>
 
-                        <button className="
-                                border-2
-                                border-white
-                                rounded-tr-[15px]
-                                rounded-tl-[15px]
-                                rounded-br-[15px]
-                                py-3
-                                px-8
-                                lg:px-10
-                                mt-5
-                                transition
-                                duration-300
-                                hover:bg-white
-                                hover:text-[#FFA20D]
-                                cursor-pointer
-                            ">
-                            JELAJAHI PROFIL
-                        </button>
+                        <ButtonJelajah
+                            title="JELAJAHI PROFIL"
+                        />
                     </div>
 
 
@@ -66,17 +85,32 @@ function Welcome() {
                             gap-5
                         ">
 
-                        <StatCard
-                            image={Siswa}
-                            number="1279"
-                            label="Siswa"
-                        />
+                        <div className=" 
+                            transition
+                            duration-300
+                            ease
+                            hover:-translate-y-2
+                        ">
+                            <StatCard
+                                image={studentImage}
+                                number={studentCount}
+                                label="Siswa"
+                            />
+                        </div>
 
-                        <StatCard
-                            image={Guru}
-                            number="88"
-                            label="Guru"
-                        />
+                        <div className=" 
+                            transition
+                            duration-300
+                            ease
+                            hover:-translate-y-2
+                        ">
+                            <StatCard
+                                image={teacherImage}
+                                number={teacherCount}
+                                label="Guru"
+                            />
+                        </div>
+
                     </div>
                 </div>
             </div>

@@ -23,11 +23,11 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor: handle 401 (expired/invalid token)
+// Response interceptor: handle 401 & 403 (expired/invalid token or unauthorized)
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 || error.response?.status === 403) {
       localStorage.removeItem("admin_token");
       localStorage.removeItem("admin_email");
       window.location.href = "/admin/login";

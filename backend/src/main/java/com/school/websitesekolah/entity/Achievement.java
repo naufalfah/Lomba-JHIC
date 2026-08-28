@@ -1,5 +1,6 @@
 package com.school.websitesekolah.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,6 +42,7 @@ public class Achievement {
     @Column(nullable = false)
     private String organizer;
 
+    @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "achievement", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference("achievement-recipient")

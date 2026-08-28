@@ -90,6 +90,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Login admin selalu publik
                         .requestMatchers("/api/auth/**").permitAll()
+                        // File upload (gambar) harus bisa diakses publik tanpa login
+                        .requestMatchers("/uploads/**").permitAll()
                         // Fitur AI chatbot bersifat publik (dipakai pengunjung web sekolah, tanpa login)
                         .requestMatchers("/api/chatbot/**").permitAll()
                         // Data sekolah bisa dibaca (GET) oleh siapa saja, termasuk fitur search

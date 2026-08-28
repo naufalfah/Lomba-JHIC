@@ -1,5 +1,6 @@
 package com.school.websitesekolah.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,6 +36,7 @@ public class Work {
 
     private LocalDate date;
 
+    @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "work", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference("work-recipient")

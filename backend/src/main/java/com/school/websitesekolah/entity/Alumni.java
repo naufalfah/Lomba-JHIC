@@ -1,6 +1,6 @@
 package com.school.websitesekolah.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,10 +23,10 @@ public class Alumni {
     @Column(name = "student_id")
     private Long studentId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @MapsId
     @JoinColumn(name = "student_id")
-    @JsonBackReference("student-alumni")
+    @JsonIgnoreProperties({"alumni", "hibernateLazyInitializer", "handler"})
     private Student student;
 
     private String instance;

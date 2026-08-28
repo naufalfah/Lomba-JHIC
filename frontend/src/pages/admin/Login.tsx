@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../api/authApi";
 
@@ -42,8 +42,10 @@ function Login() {
 
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 text-3xl mb-4">
-              🏫
+            <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 text-white mb-4">
+              <svg className="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18" />
+              </svg>
             </div>
             <h1 className="text-2xl font-bold text-white">Admin Panel</h1>
             <p className="mt-1 text-blue-200 text-sm">Masuk untuk mengelola konten website</p>
@@ -86,8 +88,11 @@ function Login() {
 
             {/* Error message */}
             {error && (
-              <div className="rounded-xl bg-red-500/20 border border-red-400/30 px-4 py-3 text-sm text-red-200">
-                ⚠️ {error}
+              <div className="rounded-xl bg-red-500/20 border border-red-400/30 px-4 py-3 text-sm text-red-200 flex items-center gap-2">
+                <svg className="w-5 h-5 text-red-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                </svg>
+                <span>{error}</span>
               </div>
             )}
 

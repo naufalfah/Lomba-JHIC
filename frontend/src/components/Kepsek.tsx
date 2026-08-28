@@ -1,18 +1,24 @@
 import KepalaSekolah from "../assets/kepsek.png"
+import ButtonJelajah from "./ButtonJelajah.tsx"
 
 function Kepsek() {
     return (
         <section>
                 <div className="
                     bg-[linear-gradient(to_right,#5b57f3_53%,#554ff0_53%,#554ff0_70%,#4d47ee_70%,#4d47ee_85%,#4139ed_85%,#4139ed_100%)]
+                    lg:bg-[linear-gradient(to_right,#5b57f3_53%,#554ff0_53%,#554ff0_70%,#4d47ee_70%,#4d47ee_85%,#4139ed_85%,#4139ed_100%)]
+                    bg-[#5b57f3]
                 ">
 
                     <div className="
-                        w-[90vw]
+                        w-[92vw]
+                        sm:w-[90vw]
                         lg:w-[80vw]
                         mx-auto
-                        px-6
-                        py-12
+                        px-4
+                        sm:px-6
+                        py-10
+                        md:py-12
                         lg:px-10
                         lg:py-0
                     ">
@@ -41,7 +47,8 @@ function Kepsek() {
                             <div className="flex flex-col items-start text-white">
 
                                 <p className="
-                                    text-2xl
+                                    text-xl
+                                    sm:text-2xl
                                     md:text-3xl
                                     lg:text-4xl
                                     font-bold
@@ -50,13 +57,13 @@ function Kepsek() {
                                 </p>
 
                                 <p className="
-                                    text-[clamp(20px,5vw,69px)]
+                                    text-[clamp(18px,5vw,89px)]
                                     font-bold
-                                    my-3
+                                    my-2 md:my-3
                                     leading-tight
                                 ">
-                                    DRS. AHMAD <br />
-                                    MUKLASON, M M.PD
+                                    Iswahyudi,
+                                    S.ST., M.Pd.
                                 </p>
 
                                 <p className="
@@ -64,28 +71,12 @@ function Kepsek() {
                                     lg:text-xl
                                     font-medium
                                 ">
-                                    Menjabat sejak 2020
+                                    Menjabat sejak 2026
                                 </p>
 
-                                <button className="
-                                    border-2
-                                    border-white
-                                    rounded-tr-[15px]
-                                    rounded-tl-[15px]
-                                    rounded-br-[15px]
-                                    py-3
-                                    px-8
-                                    lg:px-15
-                                    mt-8
-                                    transition
-                                    duration-300
-                                    hover:bg-white
-                                    hover:text-[#FFA20D]
-                                    cursor-pointer
-                                ">
-                                    LIHAT SELENGKAPNYA
-                                </button>
-
+                                <ButtonJelajah 
+                                    title="JELAJAHI SEKARANG"
+                                />
                             </div>
 
                         </div>

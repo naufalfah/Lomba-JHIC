@@ -1,5 +1,6 @@
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { getNews, createNews, updateNews, deleteNews, uploadImage, type News } from "../../api/newsApi";
+import { getImageUrl } from "../../api/uploadApi";
 
 function Berita() {
   const [newsList, setNewsList] = useState<News[]>([]);
@@ -81,8 +82,9 @@ function Berita() {
       }
       closeModal();
       await fetchNews();
-    } catch {
-      alert("Gagal menyimpan berita. Coba lagi.");
+    } catch (err: any) {
+      const msg = err.response?.data?.message || err.response?.data || err.message || "Terjadi kesalahan";
+      alert("Gagal menyimpan berita: " + msg);
     } finally {
       setSubmitting(false);
     }
@@ -93,8 +95,9 @@ function Berita() {
       await deleteNews(id);
       setDeleteConfirm(null);
       await fetchNews();
-    } catch {
-      alert("Gagal menghapus berita.");
+    } catch (err: any) {
+      const msg = err.response?.data?.message || err.response?.data || err.message || "Terjadi kesalahan";
+      alert("Gagal menghapus berita: " + msg);
     }
   };
 
@@ -119,8 +122,11 @@ function Berita() {
 
       {/* Error */}
       {error && (
-        <div className="mb-6 rounded-xl bg-red-50 border border-red-200 px-5 py-4 text-sm text-red-700">
-          ⚠️ {error}
+        <div className="mb-6 rounded-xl bg-red-50 border border-red-200 px-5 py-4 text-sm text-red-700 flex items-center gap-2">
+          <svg className="w-5 h-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+          <span>{error}</span>
         </div>
       )}
 
@@ -141,7 +147,9 @@ function Berita() {
         <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
           {newsList.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-              <span className="text-5xl mb-3">📰</span>
+              <svg className="w-12 h-12 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+              </svg>
               <p className="font-medium">Belum ada berita</p>
               <p className="text-sm mt-1">Klik "Tambah Berita" untuk membuat artikel pertama</p>
             </div>
@@ -158,17 +166,21 @@ function Berita() {
               <tbody className="divide-y divide-gray-100">
                 {newsList.map((news) => (
                   <tr key={news.id} className="hover:bg-gray-50 transition">
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 max-w-[200px] md:max-w-xs break-words">
                       <div className="flex items-center gap-3">
                         {news.imagePath ? (
-                          <img src={news.imagePath} alt={news.title} className="h-10 w-10 rounded-lg object-cover bg-gray-100" />
+                          <img src={getImageUrl(news.imagePath)} alt={news.title} className="h-10 w-10 rounded-lg object-cover bg-gray-100 shrink-0" />
                         ) : (
-                          <div className="h-10 w-10 rounded-lg bg-blue-50 flex items-center justify-center text-lg">📰</div>
+                          <div className="h-10 w-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 shrink-0">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                            </svg>
+                          </div>
                         )}
                         <span className="font-medium text-gray-800 line-clamp-1">{news.title}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-gray-500 hidden md:table-cell">
+                    <td className="px-6 py-4 text-gray-500 hidden md:table-cell max-w-xs md:max-w-md break-words">
                       <span className="line-clamp-2">{news.description}</span>
                     </td>
                     <td className="px-6 py-4 text-gray-500 whitespace-nowrap">
@@ -181,7 +193,7 @@ function Berita() {
                           onClick={() => openEditModal(news)}
                           className="rounded-lg border border-blue-200 px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 transition"
                         >
-                          ✏️ Edit
+                          Edit
                         </button>
                         {deleteConfirm === news.id ? (
                           <div className="flex gap-1">
@@ -205,7 +217,7 @@ function Berita() {
                             onClick={() => setDeleteConfirm(news.id!)}
                             className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition"
                           >
-                            🗑️ Hapus
+                            Hapus
                           </button>
                         )}
                       </div>
@@ -226,14 +238,14 @@ function Berita() {
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-gray-100 px-6 py-5">
               <h2 className="text-lg font-bold text-gray-800">
-                {editingNews ? "✏️ Edit Berita" : "📰 Tambah Berita Baru"}
+                {editingNews ? "Edit Berita" : "Tambah Berita Baru"}
               </h2>
               <button
                 id="btn-close-modal"
                 onClick={closeModal}
-                className="text-gray-400 hover:text-gray-600 transition text-xl font-medium"
+                className="text-gray-400 hover:text-gray-600 transition text-xl font-medium cursor-pointer"
               >
-                ✕
+                &times;
               </button>
             </div>
 
@@ -293,7 +305,7 @@ function Berita() {
                   {form.imagePath ? (
                     <div className="relative rounded-xl border border-gray-200 p-2 flex items-center gap-3 bg-gray-50">
                       <img 
-                        src={form.imagePath} 
+                        src={getImageUrl(form.imagePath)} 
                         alt="Preview" 
                         className="h-12 w-12 rounded-lg object-cover bg-white border"
                       />
@@ -322,8 +334,11 @@ function Berita() {
                           disabled={uploadingImage}
                           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                         />
-                        <div className="space-y-0.5">
-                          <div className="text-sm">📸</div>
+                        <div className="space-y-0.5 flex flex-col items-center">
+                          <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                          </svg>
                           <div className="text-[10px] font-medium text-gray-600">
                             {uploadingImage ? "Mengunggah..." : "Pilih file gambar untuk diunggah"}
                           </div>

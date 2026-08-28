@@ -1,5 +1,5 @@
 import { Outlet, Navigate } from "react-router-dom";
-import Sidebar from "../../components/admin/sidebar";
+import Sidebar from "../../components/admin/Sidebar";
 import { isLoggedIn } from "../../api/authApi";
 
 function AdminLayout() {

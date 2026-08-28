@@ -36,8 +36,13 @@ public class StudentService {
     }
 
     public Student create(Long majorId, Student payload) {
-        Major major = majorService.findById(majorId);
-        payload.setMajor(major);
+        if (majorId != null) {
+            Major major = majorService.findById(majorId);
+            payload.setMajor(major);
+        } else if (payload.getMajor() != null && payload.getMajor().getId() != null) {
+            Major major = majorService.findById(payload.getMajor().getId());
+            payload.setMajor(major);
+        }
         return studentRepository.save(payload);
     }
 
