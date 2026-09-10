@@ -1,0 +1,17 @@
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.float-animation {
+    animation: float 2.5s ease-in-out infinite;
+}
+
+.float-animation:hover {
+    animation-play-state: paused;
+}

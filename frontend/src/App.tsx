@@ -15,88 +15,87 @@ import AdminPrestasi from "./pages/admin/Prestasi"
 import AdminGuru from "./pages/admin/Guru"
 import AdminSiswa from "./pages/admin/Siswa"
 import AdminAlumni from "./pages/admin/Alumni"
+import ChatBot from "./components/ChatBot"
 
 function App() {
   return (
-    <>
-      <BrowserRouter>
+      <>
+          <BrowserRouter>
+              <Routes>
+                  {/* Public Routes */}
+                  <Route
+                      path='/'
+                      element={
+                          <>
+                              <Navbar />
+                              <Home />
+                              <ChatBot />
+                              <Footer />
+                          </>
+                      }
+                  />
+                  <Route
+                      path='/beranda'
+                      element={
+                          <>
+                              <Navbar />
+                              <Home />
+                              <ChatBot />
+                              <Footer />
+                          </>
+                      }
+                  />
+                  <Route
+                      path='/alumni'
+                      element={
+                          <>
+                              <Navbar />
+                              <Alumni />
+                              <Footer />
+                          </>
+                      }
+                  />
+                  <Route
+                      path='/berita/:id'
+                      element={
+                          <>
+                              <Navbar />
+                              <DetailBerita />
+                              <Footer />
+                          </>
+                      }
+                  />
+                  <Route
+                      path='/prestasi/:id'
+                      element={
+                          <>
+                              <Navbar />
+                              <DetailPrestasi />
+                              <Footer />
+                          </>
+                      }
+                  />
 
-        <Routes>
-          {/* Public Routes */}
-          <Route
-            path="/"
-            element={
-              <>
-                <Navbar />
-                <Home />
-                <Footer />
-              </>
-            }
-          />
-          <Route
-            path="/beranda"
-            element={
-              <>
-                <Navbar />
-                <Home />
-                <Footer />
-              </>
-            }
-          />
-          <Route
-            path="/alumni"
-            element={
-              <>
-                <Navbar />
-                <Alumni />
-                <Footer />
-              </>
-            }
-          />
-          <Route
-            path="/berita/:id"
-            element={
-              <>
-                <Navbar />
-                <DetailBerita />
-                <Footer />
-              </>
-            }
-          />
-          <Route
-            path="/prestasi/:id"
-            element={
-              <>
-                <Navbar />
-                <DetailPrestasi />
-                <Footer />
-              </>
-            }
-          />
+                  {/* Admin Login */}
+                  <Route path='/admin/login' element={<Login />} />
 
-          {/* Admin Login */}
-          <Route path="/admin/login" element={<Login />} />
+                  {/* Admin Protected Routes */}
+                  <Route path='/admin' element={<AdminLayout />}>
+                      <Route index element={<Dashboard />} />
+                      <Route path='berita' element={<Berita />} />
+                      <Route path='jurusan' element={<AdminJurusan />} />
+                      <Route path='prestasi' element={<AdminPrestasi />} />
+                      <Route path='guru' element={<AdminGuru />} />
+                      <Route path='siswa' element={<AdminSiswa />} />
+                      <Route path='alumni' element={<AdminAlumni />} />
+                  </Route>
 
-          {/* Admin Protected Routes */}
-          <Route
-            path="/admin"
-            element={<AdminLayout />}
-          >
-            <Route index element={<Dashboard />} />
-            <Route path="berita" element={<Berita />} />
-            <Route path="jurusan" element={<AdminJurusan />} />
-            <Route path="prestasi" element={<AdminPrestasi />} />
-            <Route path="guru" element={<AdminGuru />} />
-            <Route path="siswa" element={<AdminSiswa />} />
-            <Route path="alumni" element={<AdminAlumni />} />
-          </Route>
-
-          {/* Catch all fallback to / */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </>
-  )
+                  {/* Catch all fallback to / */}
+                  <Route path='*' element={<Navigate to='/' replace />} />
+              </Routes>
+          </BrowserRouter>
+      </>
+  );
 }
 
 export default App;
