@@ -16,6 +16,7 @@ import AdminGuru from "./pages/admin/Guru"
 import AdminSiswa from "./pages/admin/Siswa"
 import AdminAlumni from "./pages/admin/Alumni"
 import ChatBot from "./components/ChatBot"
+import ChatBotPage from "./pages/ChatBotPage"
 
 function App() {
   return (
@@ -75,6 +76,7 @@ function App() {
                           </>
                       }
                   />
+                   <Route path='/chatbot' element={<ChatBotPage />} />
 
                   {/* Admin Login */}
                   <Route path='/admin/login' element={<Login />} />
