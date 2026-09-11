@@ -18,14 +18,14 @@ import java.time.Duration;
 import java.util.List;
 
 /**
- * Service untuk AI chatbot website sekolah menggunakan OpenAI Chat Completions API.
+ * Service untuk AI chatbot website sekolah menggunakan Groq API (GroqCloud).
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatbotService {
 
-    private static final String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
+    private static final String GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
     private final ObjectMapper objectMapper;
 
@@ -33,13 +33,13 @@ public class ChatbotService {
             .connectTimeout(Duration.ofSeconds(10))
             .build();
 
-    @Value("${OPENAI_API_KEY:}")
+    @Value("${GROQ_API_KEY:}")
     private String apiKey;
 
-    @Value("${OPENAI_MODEL:gpt-4o-mini}")
+    @Value("${GROQ_MODEL:llama-3.3-70b-versatile}")
     private String model;
 
-    @Value("${OPENAI_MAX_TOKENS:1024}")
+    @Value("${GROQ_MAX_TOKENS:1024}")
     private int maxTokens;
 
     @Value("${CHATBOT_SYSTEM_PROMPT:Kamu adalah asisten virtual di website sekolah ini. "
@@ -52,14 +52,14 @@ public class ChatbotService {
     public String sendMessage(String userMessage, List<ChatMessageDto> history) {
         if (apiKey == null || apiKey.isBlank()) {
             throw new IllegalStateException(
-                    "OPENAI_API_KEY belum diset. Set environment variable OPENAI_API_KEY " +
+                    "GROQ_API_KEY belum diset. Set environment variable GROQ_API_KEY " +
                     "sebelum menjalankan aplikasi supaya fitur chatbot bisa dipakai.");
         }
 
         String requestBody = buildRequestBody(userMessage, history);
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(OPENAI_API_URL))
+                .uri(URI.create(GROQ_API_URL))
                 .timeout(Duration.ofSeconds(30))
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + apiKey)
@@ -70,7 +70,7 @@ public class ChatbotService {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() != 200) {
-                log.error("OpenAI API error {}: {}", response.statusCode(), response.body());
+                log.error("Groq API error {}: {}", response.statusCode(), response.body());
                 throw new IllegalStateException(
                         "Gagal menghubungi layanan chatbot (status " + response.statusCode() + ")");
             }
@@ -78,7 +78,7 @@ public class ChatbotService {
             return extractReplyText(response.body());
         } catch (java.io.IOException | InterruptedException ex) {
             Thread.currentThread().interrupt();
-            log.error("Gagal memanggil OpenAI API", ex);
+            log.error("Gagal memanggil Groq API", ex);
             throw new IllegalStateException("Gagal menghubungi layanan chatbot: " + ex.getMessage());
         }
     }
@@ -90,7 +90,7 @@ public class ChatbotService {
 
         ArrayNode messages = root.putArray("messages");
 
-        // Pada OpenAI API, System Prompt ditaruh di dalam array messages dengan role "system"
+        // Pada Groq API (OpenAI compatible), System Prompt dikirim via role "system"
         ObjectNode systemNode = messages.addObject();
         systemNode.put("role", "system");
         systemNode.put("content", systemPrompt);
