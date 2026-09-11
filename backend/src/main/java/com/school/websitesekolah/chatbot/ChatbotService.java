@@ -18,14 +18,14 @@ import java.time.Duration;
 import java.util.List;
 
 /**
- * Service untuk AI chatbot website sekolah menggunakan Google Gemini REST API.
+ * Service untuk AI chatbot website sekolah menggunakan Groq API (GroqCloud).
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatbotService {
 
-    private static final String GEMINI_API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/";
+    private static final String GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
     private final ObjectMapper objectMapper;
 
@@ -33,13 +33,13 @@ public class ChatbotService {
             .connectTimeout(Duration.ofSeconds(10))
             .build();
 
-    @Value("${GEMINI_API_KEY:}")
+    @Value("${GROQ_API_KEY:}")
     private String apiKey;
 
-    @Value("${GEMINI_MODEL:gemini-2.5-flash}")
+    @Value("${GROQ_MODEL:llama-3.3-70b-versatile}")
     private String model;
 
-    @Value("${GEMINI_MAX_TOKENS:1024}")
+    @Value("${GROQ_MAX_TOKENS:1024}")
     private int maxTokens;
 
     @Value("${CHATBOT_SYSTEM_PROMPT:Kamu adalah asisten virtual di website sekolah ini. "
@@ -52,17 +52,17 @@ public class ChatbotService {
     public String sendMessage(String userMessage, List<ChatMessageDto> history) {
         if (apiKey == null || apiKey.isBlank()) {
             throw new IllegalStateException(
-                    "GEMINI_API_KEY belum diset. Set environment variable GEMINI_API_KEY " +
+                    "GROQ_API_KEY belum diset. Set environment variable GROQ_API_KEY " +
                     "sebelum menjalankan aplikasi supaya fitur chatbot bisa dipakai.");
         }
 
-        String requestUrl = GEMINI_API_BASE_URL + model + ":generateContent?key=" + apiKey;
         String requestBody = buildRequestBody(userMessage, history);
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(requestUrl))
+                .uri(URI.create(GROQ_API_URL))
                 .timeout(Duration.ofSeconds(30))
                 .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + apiKey)
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
 
@@ -70,7 +70,7 @@ public class ChatbotService {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() != 200) {
-                log.error("Gemini API error {}: {}", response.statusCode(), response.body());
+                log.error("Groq API error {}: {}", response.statusCode(), response.body());
                 throw new IllegalStateException(
                         "Gagal menghubungi layanan chatbot (status " + response.statusCode() + ")");
             }
@@ -78,62 +78,50 @@ public class ChatbotService {
             return extractReplyText(response.body());
         } catch (java.io.IOException | InterruptedException ex) {
             Thread.currentThread().interrupt();
-            log.error("Gagal memanggil Gemini API", ex);
+            log.error("Gagal memanggil Groq API", ex);
             throw new IllegalStateException("Gagal menghubungi layanan chatbot: " + ex.getMessage());
         }
     }
 
     private String buildRequestBody(String userMessage, List<ChatMessageDto> history) {
         ObjectNode root = objectMapper.createObjectNode();
+        root.put("model", model);
+        root.put("max_tokens", maxTokens);
 
-        // 1. System Instruction untuk Gemini API
-        ObjectNode systemInstructionNode = root.putObject("systemInstruction");
-        ArrayNode systemParts = systemInstructionNode.putArray("parts");
-        systemParts.addObject().put("text", systemPrompt);
+        ArrayNode messages = root.putArray("messages");
 
-        // 2. Generation Config (Max Output Tokens)
-        ObjectNode genConfig = root.putObject("generationConfig");
-        genConfig.put("maxOutputTokens", maxTokens);
-
-        // 3. Conversation Contents
-        ArrayNode contents = root.putArray("contents");
+        // Pada Groq API (OpenAI compatible), System Prompt dikirim via role "system"
+        ObjectNode systemNode = messages.addObject();
+        systemNode.put("role", "system");
+        systemNode.put("content", systemPrompt);
 
         if (history != null) {
             for (ChatMessageDto msg : history) {
                 if (msg == null || msg.getRole() == null || msg.getContent() == null) {
                     continue;
                 }
-                ObjectNode contentNode = contents.addObject();
-                // Map role OpenAI/Anthropic "assistant" -> "model" untuk Gemini
-                String role = "assistant".equalsIgnoreCase(msg.getRole()) ? "model" : msg.getRole();
-                contentNode.put("role", role);
-
-                ArrayNode parts = contentNode.putArray("parts");
-                parts.addObject().put("text", msg.getContent());
+                ObjectNode node = messages.addObject();
+                node.put("role", msg.getRole());
+                node.put("content", msg.getContent());
             }
         }
 
-        // Tambahkan pesan user paling baru
-        ObjectNode latestUserNode = contents.addObject();
-        latestUserNode.put("role", "user");
-        ArrayNode parts = latestUserNode.putArray("parts");
-        parts.addObject().put("text", userMessage);
+        ObjectNode latest = messages.addObject();
+        latest.put("role", "user");
+        latest.put("content", userMessage);
 
         return root.toString();
     }
 
     private String extractReplyText(String responseBody) throws java.io.IOException {
         JsonNode root = objectMapper.readTree(responseBody);
-        JsonNode candidates = root.path("candidates");
+        JsonNode choices = root.path("choices");
 
-        if (candidates.isArray() && !candidates.isEmpty()) {
-            JsonNode firstCandidate = candidates.get(0);
-            JsonNode parts = firstCandidate.path("content").path("parts");
-            if (parts.isArray() && !parts.isEmpty()) {
-                String text = parts.get(0).path("text").asText();
-                if (!text.isBlank()) {
-                    return text;
-                }
+        if (choices.isArray() && !choices.isEmpty()) {
+            JsonNode firstChoice = choices.get(0);
+            String content = firstChoice.path("message").path("content").asText();
+            if (!content.isBlank()) {
+                return content;
             }
         }
 
