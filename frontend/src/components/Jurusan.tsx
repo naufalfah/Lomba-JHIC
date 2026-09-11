@@ -117,7 +117,7 @@ function Jurusan() {
 
         {/* Major cards */}
         {!loading && !error && majorList.length > 0 && (
-          <div className="flex gap-6 overflow-x-auto pb-4">
+          <div className="flex gap-6 overflow-x-auto scrollbar-hide">
             {majorList.map((item) => {
               const { title, subtitle } = getMajorDisplay(item);
 
