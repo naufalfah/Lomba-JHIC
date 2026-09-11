@@ -43,7 +43,8 @@ public class ChatbotService {
     private int maxTokens;
 
     @Value("${CHATBOT_SYSTEM_PROMPT:Kamu adalah asisten virtual di website sekolah ini. "
-            + "Jawab pertanyaan pengunjung (siswa, orang tua, calon siswa) seputar sekolah "
+            + "Jawab pertanyaan pengunjung (siswa, orang tua, calon siswa, pihak perusahaan tertentu yang mencari rekrutan) seputar sekolah "
+            + "sekolah ini adalah smk yang memiliki 5 jurusan yaitu RPL, DKV, APHP, Kuliner, dan LPS"
             + "dengan ramah, singkat, dan dalam Bahasa Indonesia. Jika kamu tidak tahu jawaban "
             + "pastinya (misalnya data spesifik sekolah yang tidak kamu ketahui), sarankan "
             + "pengunjung menghubungi pihak sekolah langsung.}")
