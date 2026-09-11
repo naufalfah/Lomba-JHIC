@@ -76,7 +76,7 @@ function App() {
                           </>
                       }
                   />
-                   <Route path='/chatbot' element={<ChatBotPage />} />
+                   <Route path='/assistant' element={<ChatBotPage />} />
 
                   {/* Admin Login */}
                   <Route path='/admin/login' element={<Login />} />

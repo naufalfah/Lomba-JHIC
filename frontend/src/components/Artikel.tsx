@@ -70,7 +70,7 @@ function Artikel() {
 
         {/* News list */}
         {!loading && !error && newsList.length > 0 && (
-          <div className="flex gap-6 overflow-x-auto pb-2">
+          <div className="flex gap-6 overflow-x-auto scrollbar-hide">
             {newsList.map((item) => (
               <Link
                 to={`/berita/${item.id}`}

@@ -1,5 +1,5 @@
 import aiBg from '../assets/ai-bg.jpg';
-import plusIcon from '../assets/plus.png';
+import plusIcon from '../assets/clip.png';
 import arrowRight from '../assets/arrow-right.png';
 import CardGlass from '../components/CardGlass';
 
@@ -60,6 +60,3 @@ export default function ChatBotPage() {
         </div>
     );
 }
-
-
-// bg-[#30298B]

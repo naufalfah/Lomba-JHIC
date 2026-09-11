@@ -71,7 +71,7 @@ function Prestasi() {
 
         {/* Achievement cards */}
         {!loading && !error && achievementList.length > 0 && (
-          <div className="flex gap-6 overflow-x-auto pb-4">
+          <div className="flex gap-6 overflow-x-auto scrollbar-hide">
             {achievementList.map((item) => (
               <Link
                 to={`/prestasi/${item.id}`}
