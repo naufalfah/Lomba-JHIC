@@ -1,28 +1,16 @@
 export default function CardGlass({
-    judul = "",
-    isi = "",
-    quote = "",
-    next =""
+    text = 'ini history ini history ini history ini history ini history ini history ini history ',
+    onClick,
+}: {
+    text?: string;
+    onClick?: () => void;
 }) {
     return (
-        <div className='w-full max-w-sm rounded-2xl border border-white/25 bg-blue-500/20 p-10 shadow-[0_10px_30px_rgba(50,120,255,0.75)] backdrop-blur-md transition duration-300 hover:-translate-y-2'>
-            <h2 className='text-xl font-medium text-white'>
-                {judul}
-            </h2>
-
-            <p className='mt-6 text-sm font-medium leading-relaxed text-white/75 tracking-wider'>
-                {isi}
-            </p>
-
-            <p className='mt-6 text-sm font-medium leading-relaxed text-white/75 tracking-wider'>
-                {quote}
-            </p>
-
-            <div className='mt-8 text-right'>
-                <button className='text-sm font-medium text-white/80 transition hover:text-white'>
-                    {next}
-                </button>
-            </div>
+        <div
+            onClick={onClick}
+            className={`w-50 max-w-sm rounded-full border border-white/5 bg-blue-600/20 p-2 px-5 shadow-[0_10px_30px_rgba(50,120,255,0.15)] backdrop-blur-md transition duration-300 hover:scale-95 ${onClick ? 'cursor-pointer' : ''}`}
+        >
+            <p className='truncate text-center text-white text-xs'>{text}</p>
         </div>
     );
 }
